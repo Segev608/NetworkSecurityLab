@@ -1,17 +1,27 @@
 from core import *
 
+# every OnionRouter knows his private+public RSA key
 with open('key.pem', 'rb') as keyfile:
     rsa_key = RSA.importKey(keyfile.read())
+
+# Diffie-Hellman final result of the key-exchange
 shared_key = None
 
 ################
 identifier = 1
 PORT = 9000 + identifier
 ################
+
+# every OnionRouter knows about the node before him (closes to the client) and the node after him (he needs to pass
+# on data toward him) in the path
 next_node: TorSocket = None
 previous_node: TorSocket = None
 
+# NOTE: every handle_COMMAND in this module, basically responsible to respond in the correct way
+# to the COMMAND the OnionRouter just got
 
+
+# receive CREATE cell from the node before him and sending back CREATED cell
 def handle_create(connection: TorClient, cell: Cell, **kwargs):
     global shared_key
     client_dh_pubkey = rsa_key.decrypt(cell.payload)
@@ -22,6 +32,7 @@ def handle_create(connection: TorClient, cell: Cell, **kwargs):
                               hashkey=HASH_FUNC(shared_key.encode()).digest()))
 
 
+# receive RELAY cell from the node before him and extending the inner cell to the next node
 def handle_relay(connection: TorClient, cell: Cell, **kwargs):
     # in case the current router can see that the relay cell he has just got
     # belongs to him
@@ -38,6 +49,7 @@ def handle_relay(connection: TorClient, cell: Cell, **kwargs):
         return next_node.sr1(cell)
 
 
+# util function to handle RELAY cell to move on to the previous node
 def create_relay(payload: bytes):
     cipher = AES.new(shared_key, AES_MODE)
     payload = cipher.encrypt(payload)
@@ -45,6 +57,7 @@ def create_relay(payload: bytes):
     return relay_layer
 
 
+# after decrypting the RELAY cell and seeing EXTEND, respond by move that cell payload as new CREATE cell
 def handle_extend(connection: TorClient, cell: Cell, **kwargs):
     global next_node
     directory = DirectoryUnit()
@@ -54,12 +67,14 @@ def handle_extend(connection: TorClient, cell: Cell, **kwargs):
     return next_node.sr1(Cell(cid=node.identifier, command=Commands.CREATE, payload=cell.dhkey))
 
 
+# in case he get CREATED from the next node, return it to the previous node, back to the client as EXTENDED
 def handle_created(connection: TorClient, cell: Cell, **kwargs):
     client_cell = Cell(cid=1, command=Commands.EXTENDED, pubkey=cell.pubkey, hashkey=cell.hashkey)
     data = client_cell.raw()
     connection.send_cell(create_relay(data))
 
 
+# every cell COMMAND has it own function to deal with
 ACTIONS = {
     Commands.CREATE: handle_create,
     Commands.CREATED: handle_created,
@@ -72,15 +87,12 @@ ACTIONS = {
 
 def main():
     ip = '0.0.0.0'
-    # listen for every cell packet
-    # which comes through this port
+    # listen for every cell packet which comes through this port
     server = ORSocket(ip, PORT)
     previous_node = server.accept()
 
-    # this current onion router received new CREATE
-    # packet in order to initialize keys
-
     while True:
+        # this OnionRouter gets new cell from the ORSocket and respond with the corresponding procedure
         cell = previous_node.recv_cell()
         cell = ACTIONS[cell.command](previous_node, cell, first=True)
         while cell:
