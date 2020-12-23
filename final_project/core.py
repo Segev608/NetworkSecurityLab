@@ -8,13 +8,21 @@ from Crypto import Random
 from scapy.all import *
 from pyDH import DiffieHellman  # router & client uses
 
+# Initialize global variables for which
+# both of the client & router uses
+
 PORT = 9001
 HASH_FUNC = sha256
 SSL_VERSION = ssl.PROTOCOL_TLSv1
 AES_MODE = AES.MODE_ECB
+
+# In order to decrease the size of the prime number
+# in the final shared diffie hellman key from 2048 to 1536
 DH_SIZE = 5
 
 
+#  Decorator which handle the log file for every
+# function he called at
 def session_log(client_session):
     # import logging
     from logging import basicConfig, INFO, info
@@ -32,6 +40,8 @@ def session_log(client_session):
     return wrapper
 
 
+# Model which holds the information about each onion router
+# in this onion routing system implementation
 class OnionNode:
     def __init__(self, pubkey, id):
         self.ip = get_if_addr('eth0')
@@ -44,6 +54,8 @@ class OnionNode:
         return RSA.importKey(self.__pubkey).publickey()
 
 
+# Responsible for handle the information which
+# needs to be shared across the onion network
 class DirectoryUnit:
     def __init__(self):
         with open("DirectoryServer.txt", 'rb') as directfile:
@@ -53,7 +65,7 @@ class DirectoryUnit:
                 data = pickle.loads(node)
                 self.nodes.append(data)
 
-    # returns a node based on his identifier
+    # returns a node object based on his identifier
     def get_node(self, id):
         if isinstance(id, OnionNode):
             raise Exception("HERE!!!!")
@@ -65,26 +77,45 @@ class DirectoryUnit:
             if node.identifier == id:
                 return node
 
-    # returns a random path of identifiers
-    def get_circut(self):
+    # returns a random path of OnionNode's identifiers
+    def get_circuit(self):
         id_list = list(map(lambda node: node.identifier, self.nodes))
         # random.shuffle(id_list)
         return id_list
 
 
+# Const structure which holds all the different Cell's type
 class Commands:
+    # I) Client wants to start connection with the first OnionRouter in the onion circuit. He's sending
+    #    Cell which contains a Cell identifier which the OnionRouters are identified by + Encrypted(DH key exchange)
+    #    by the RSA public key of the OnionRouter he's about to send this Cell
+    # II) by the Client order to extend connection, the first OnionRouter extends the client's CREATE cell
+    # III) for any next extend further request, inside the onion network, (which was given by the Client)
+    #      the OnionRouter are passing it on.
     CREATE = 'CREATE'
+    # Once a CREATE cell is received by an extended OnionRouter, a Cell containing his unique OnionRouter's identifier
+    # is send + his DH public key in the key exchange procedure + SHA256(shared key he has successfully created using
+    # the Client DH public key part)
     CREATED = 'CREATED'
+    # This command basically tells the receiver "Decrypt it with AES-ECB using our DH shared key and execute the command
+    # which stored inside".
     RELAY = 'RELAY'
+    # cell structure, the unique identifier of the next OnionRouter he's about to pass the CREATE cell to (He can obtain
+    # more information about him, using the DirectoryUnit which holds all the info) + Encrypted(DH key exchange)
+    # by the RSA public key of the *next* OnionRouter. Whenever a OnionRouter receives this command he knows that he's
+    # should create a new CREATE cell and pass it with the info he just got to the next OnionRouter in the circuit.
     EXTEND = 'EXTEND'
+    # this command notify the Client that this Cell payload contains the CREATED (more info above)Cell from an extended
+    # OnionRouter but it came encrypted with the help of the OnionRouter in the middle.
     EXTENDED = 'EXTENDED'
     BEGIN = 'BEGIN'
     CONNECTED = 'CONNECTED'
     DATA = 'DATA'
 
 
+# This object contains all the information which described above [line 88-113]
 class Cell:
-    PAD_SEPERATOR = b'\n\n\n'
+    PAD_SEPARATOR = b'\n\n\n'
 
     def __init__(self, cid, command, **kwargs):
         self.cid = cid
@@ -108,16 +139,17 @@ class Cell:
 
     def raw(self):
         data = pickle.dumps(self)
-        data += Cell.PAD_SEPERATOR
+        data += Cell.PAD_SEPARATOR
         data += (16 - (len(data) % 16)) * b'0'
         return data
 
     @classmethod
     def create(cls, data: bytes):
-        data = data.split(Cell.PAD_SEPERATOR)[0]
+        data = data.split(Cell.PAD_SEPARATOR)[0]
         return pickle.loads(data)
 
 
+# A base class, wrapper of socket, handles the basic [send/receive] operation
 class TorSocket:
     def __init__(self, **kwargs):
         if 'sock' in kwargs:
@@ -164,6 +196,7 @@ class TorSocket:
         return self.__origsocket
 
 
+# A specific properties which executed by the client-side
 class TorClient(TorSocket):
     def __init__(self, ip, port):
         TorSocket.__init__(self)
@@ -172,6 +205,7 @@ class TorClient(TorSocket):
         self.peer_sslcertificate = X509_Cert(self.sock.getpeercert(binary_form=True))
 
 
+# A specific properties which executed by the OnionRouter-side
 class ORSocket(TorSocket):
     def __init__(self, ip, port):
         TorSocket.__init__(self)
@@ -187,12 +221,7 @@ class ORSocket(TorSocket):
 
 
 def main():
-    random_gen = Random.new().read
-    key = RSA.generate(1024, random_gen)
-    public_key = key.publickey()
-    encrypted = public_key
-    rsa_library = [()]
-
+    pass
 
 if __name__ == '__main__':
     main()
