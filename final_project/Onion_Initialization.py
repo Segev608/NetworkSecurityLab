@@ -1,8 +1,8 @@
 from Crypto.PublicKey import RSA
 import pem
-import pickle
-from core import OnionNode
+from core.utils import OnionNode
 from subprocess import Popen, PIPE, STDOUT
+import json
 
 
 def create_cert():
@@ -22,12 +22,11 @@ def gen_rsa_key():
 
 
 def append_to_dir():
-    with open("DirectoryServer.txt", 'ab+') as pubfile:
-        SEPERATOR = b'\n\n\n'
+    with open("DirectoryServer.txt", 'a+') as pubfile:
         _, pbkey = pem.parse_file('key.pem')
-        node = OnionNode(str(pbkey), 1)
+        node = OnionNode(1, '127.0.0.1', str(pbkey))
         print(f"node info: {node.pubkey}\n{node.ip}")
-        pubfile.write(pickle.dumps(node) + SEPERATOR)
+        pubfile.write(json.dumps(node.__dict__) + '\n\n')
 
 
 if __name__ == '__main__':
@@ -35,3 +34,9 @@ if __name__ == '__main__':
     # create_cert()
     # gen_rsa_key()
     append_to_dir()
+    # with open("DirectoryServer.txt", 'r') as pubfile:
+    #     d = pubfile.read().split('\n\n')
+    #     o = OnionNode(**json.loads(d[0]))
+    #     print(o)
+    #     print(o.ip)
+    #     print(o.pubkey)
