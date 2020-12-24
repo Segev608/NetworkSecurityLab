@@ -76,6 +76,5 @@ class DirectoryUnit:
     # returns a random path of OnionNode's identifiers
     def get_circuit(self):
         id_list = list(map(lambda node: node.identifier, self.nodes))
-        random.shuffle(id_list)
         return id_list
 

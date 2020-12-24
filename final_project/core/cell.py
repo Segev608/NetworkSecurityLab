@@ -4,7 +4,7 @@ from .constants import *
 
 from baseconv import base64
 
-SEP = b'\r\n'
+SEP = b'\r\n'*15
 
 
 def from_bytes(data: bytes):

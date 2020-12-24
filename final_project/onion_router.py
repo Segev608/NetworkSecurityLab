@@ -2,6 +2,7 @@ import pem
 from core.cell import *
 from core.utils import *
 from core.sockets import TorSocket, TorClient, ORSocket
+import requests
 
 # every OnionRouter knows his private+public RSA key
 rsa_prvkey, rsa_pubkey = map(lambda key: str(key), pem.parse_file('key.pem'))
@@ -76,14 +77,28 @@ def handle_created(cell: CreatedCell):
     wrap_relay(extended_cell)
 
 
+def handle_begin(cell: PayloadCell):
+    print('Got Begin Request!')
+    cell = PayloadCell(cid=1, command=Commands.CONNECTED, payload=b'')
+    wrap_relay(cell)
+
+
+def handle_data(cell: PayloadCell):
+    req = cell.payload.decode()
+    r = requests.get(req, stream=True)
+    res = PayloadCell(cid=1, command=Commands.DATA, payload=r.content)
+
+    wrap_relay(res)
+
+
 # every cell COMMAND has it own function to deal with
 ACTIONS = {
     Commands.CREATE: handle_create,
     Commands.CREATED: handle_created,
     Commands.RELAY: handle_relay,
     Commands.EXTEND: handle_extend,
-    Commands.BEGIN: None,
-    Commands.DATA: None
+    Commands.BEGIN: handle_begin,
+    Commands.DATA: handle_data
 }
 
 

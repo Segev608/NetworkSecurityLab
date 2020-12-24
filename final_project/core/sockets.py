@@ -1,11 +1,14 @@
 from scapy.all import *
 from scapy.layers.x509 import X509_Cert
 from core import cell
+from .cell import Cell
 from .constants import *
 
 
 # A base class, wrapper of socket, handles the basic [send/receive] operation
 class TorSocket:
+    LEN = 12
+
     def __init__(self, **kwargs):
         if 'sock' in kwargs:
             self.__origsocket = kwargs['sock']
@@ -14,32 +17,45 @@ class TorSocket:
             self.__origsocket = socket.socket()
             self.sock = None
 
-    def send_cell(self, c):
+    def send_cell(self, c: Cell):
         if self.sock:
             packet_data = c.raw()
             packet_data += cell.SEP
-            if len(packet_data) > cell.CELL_LEN:
-                raise Exception("Cell too large")
-            else:
-                packet_data += b'0' * (cell.CELL_LEN - len(packet_data))
-
+            packet_data += b'0'*(cell.CELL_LEN - (len(packet_data) % cell.CELL_LEN))
+            # size = str(len(packet_data) +
+            #            (0 if (x := (len(packet_data) % cell.CELL_LEN)) == 0 else cell.CELL_LEN - x))
+            # self.sock.send(size.zfill(TorSocket.LEN).encode())
+            size = str(len(packet_data))
+            self.sock.send(size.zfill(TorSocket.LEN).encode())
             self.sock.send(packet_data)
+            # while len(packet_data) > 0:
+            #     pac = packet_data[:cell.CELL_LEN]
+            #     if len(pac) < cell.CELL_LEN:
+            #         pac += cell.SEP
+            #         pac += b'0' * (cell.CELL_LEN - len(packet_data))
+            #     self.sock.send(pac)
+            #     packet_data = packet_data[cell.CELL_LEN:]
         else:
             raise Exception("Unresolved socket")
 
-    def recv_cell(self):
+    def recv_cell(self) -> Cell:
         if self.sock:
+            length = b''
+            while len(length) < TorSocket.LEN:
+                length += self.sock.recv(TorSocket.LEN - len(length))
+
+            length = int(length.decode())
             packet_data = b''
-            while len(packet_data) < cell.CELL_LEN:
-                packet_data += self.sock.recv(cell.CELL_LEN - len(packet_data))
+            while len(packet_data) < length:
+                packet_data += self.sock.recv(length - len(packet_data))
 
             data = cell.from_bytes(packet_data)
             return data
         else:
             raise Exception("Unresolved socket")
 
-    def sr1(self, cell):
-        self.send_cell(cell)
+    def sr1(self, c: Cell) -> Cell:
+        self.send_cell(c)
         return self.recv_cell()
 
     def close(self):
