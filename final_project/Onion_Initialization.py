@@ -33,10 +33,5 @@ if __name__ == '__main__':
     pass
     # create_cert()
     # gen_rsa_key()
-    append_to_dir()
-    # with open("DirectoryServer.txt", 'r') as pubfile:
-    #     d = pubfile.read().split('\n\n')
-    #     o = OnionNode(**json.loads(d[0]))
-    #     print(o)
-    #     print(o.ip)
-    #     print(o.pubkey)
+    # append_to_dir()
+

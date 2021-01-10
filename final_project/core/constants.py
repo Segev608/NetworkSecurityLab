@@ -6,7 +6,7 @@ from Crypto.Cipher import AES
 CELL_LEN = 512
 HASH_FUNC = sha256
 HASH_SIZE = 32
-SSL_VERSION = ssl.PROTOCOL_TLSv1
+SSL_VERSION = ssl.PROTOCOL_TLSv1_2
 AES_MODE = AES.MODE_ECB
 DH_SIZE = 1  # In order to decrease the size of the prime number
 
@@ -36,7 +36,10 @@ class Commands:
     # this command notify the Client that this Cell payload contains the CREATED (more info above)Cell from an extended
     # OnionRouter but it came encrypted with the help of the OnionRouter in the middle.
     EXTENDED = b'5'
+    # notify the OnionRouter that a connection is about to be established
     BEGIN = b'6'
+    # the OnionRouter acknowledgements the connection which the last one has just finish to establish
     CONNECTED = b'7'
+    # transferring information from client to end-point (Webpages, Confidential information...)
     DATA = b'8'
 

@@ -22,19 +22,9 @@ class TorSocket:
             packet_data = c.raw()
             packet_data += cell.SEP
             packet_data += b'0'*(cell.CELL_LEN - (len(packet_data) % cell.CELL_LEN))
-            # size = str(len(packet_data) +
-            #            (0 if (x := (len(packet_data) % cell.CELL_LEN)) == 0 else cell.CELL_LEN - x))
-            # self.sock.send(size.zfill(TorSocket.LEN).encode())
             size = str(len(packet_data))
             self.sock.send(size.zfill(TorSocket.LEN).encode())
             self.sock.send(packet_data)
-            # while len(packet_data) > 0:
-            #     pac = packet_data[:cell.CELL_LEN]
-            #     if len(pac) < cell.CELL_LEN:
-            #         pac += cell.SEP
-            #         pac += b'0' * (cell.CELL_LEN - len(packet_data))
-            #     self.sock.send(pac)
-            #     packet_data = packet_data[cell.CELL_LEN:]
         else:
             raise Exception("Unresolved socket")
 

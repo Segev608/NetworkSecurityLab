@@ -7,17 +7,36 @@ from .constants import *
 from pyDH import DiffieHellman
 
 
-def debug(*xs):
-    for x in xs:
-        print(type(x), end=' ')
-        if hasattr(x, '__len__'):
-            print(len(x), end=' ')
-        print(x)
+class Colors:
+    colors = {
+        'BLA': '\u001b[30m',
+        'RED': '\u001b[31;1m',
+        'GRE': '\u001b[01;32m',
+        'YEL': '\u001b[33m',
+        'BLU': '\u001b[34m',
+        'WHI': '\u001b[0m',
+        'CYA': '\u001b[01;36m'
+    }
+    C_BALL = u"\u25CF"
+
+    @staticmethod
+    def colorful_str(**kwargs):
+        """
+        kwargs:
+            <color> str: color from ANSI colors\n
+            <sentence> str: string to color
+        :return: colored string
+        """
+        return f'{Colors.colors[kwargs["color"].upper()[:3]]}{kwargs["sentence"]}{Colors.colors["WHI"]}'
 
 
+# wrapper to the RSA package in order to perform
+# easy calculation with no need to worry about the variable types
 class RSA:
+    # RSA plaintext chunk size is limited
     SIZE = 256
 
+    # in order to transfer the DH pre-shared key encrypted
     @classmethod
     def encrypt(cls, pubkey, data):
         if not isinstance(pubkey, RSAKey.RsaKey):
@@ -31,6 +50,8 @@ class RSA:
         data = PKCS1_OAEP.new(pubkey).encrypt(data)
         return data
 
+    # every OnionRouter needs the ability to decrypt the DH shared-key
+    # given by the client
     @classmethod
     def decrypt(cls, prvkey, data: bytes, expected: type):
         if not isinstance(prvkey, RSAKey.RsaKey):

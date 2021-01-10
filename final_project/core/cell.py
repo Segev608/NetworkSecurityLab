@@ -1,9 +1,9 @@
 import struct
 from .utils import RSA
 from .constants import *
-
 from baseconv import base64
 
+# strong flag to separate cell content and padding
 SEP = b'\r\n'*15
 
 
@@ -15,7 +15,8 @@ def from_bytes(data: bytes):
     return PayloadCell(i, cmd, data[3:].split(SEP)[0])
 
 
-# This object contains all the information which described above [line 88-113]
+# base class, contains all the information
+# which described in the cell.py file
 class Cell:
     def __init__(self, cid, command):
         self.cid: int = cid
@@ -24,15 +25,20 @@ class Cell:
     def __str__(self):
         return f'id: {self.cid} | command: {self.command}'
 
+    # creates bytes object containing the values of the
+    # cid as unsigned short and the cell's command
     def raw(self):
         data = struct.pack('!H', self.cid) + self.command
         return data
 
+    # converts the cell into byte object and handles the padding
+    # for the AES encryption (plaintext must be multiple of 16)
     def relay(self):
         data = self.raw() + SEP
         return data + b'0' * (16 - (len(data) % 16))
 
 
+# dealing with payload cells
 class PayloadCell(Cell):
     def __init__(self, cid, command, payload: bytes):
         super().__init__(cid, command)
@@ -56,6 +62,8 @@ class CreateCell(Cell):
 
     @classmethod
     def create(cls, cid: int, data: bytes):
+        # RSA payload is encrypted using the first OR's
+        # public key, RSA demands that plaintext size will be 256 byte long
         return CreateCell(cid, data[:RSA.SIZE])
 
 
@@ -72,6 +80,7 @@ class ExtendCell(Cell):
 
     @classmethod
     def create(cls, cid: int, data: bytes):
+        # the next onion router identifier located in the first two bytes
         orid = struct.unpack('!H', data[:2])[0]
         return ExtendCell(cid, orid, data[2:RSA.SIZE + 2])
 

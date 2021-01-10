@@ -2,6 +2,7 @@ import pem
 from core.cell import *
 from core.utils import *
 from core.sockets import TorSocket, TorClient, ORSocket
+from core.utils import Colors
 import requests
 
 # every OnionRouter knows his private+public RSA key
@@ -30,7 +31,8 @@ def handle_create(cell: CreateCell):
     shared_key = server_dh.gen_shared_key(client_dh_pubkey)[:32]
     cell = CreatedCell(cid=cell.cid, dh_key=server_pubkey, hashkey=HASH_FUNC(shared_key.encode()).digest())
     print(f'Sending Created Response: {cell}')
-    print(f'Shared DH Key: {shared_key}')
+    print(f'Shared DH Key: {Colors.colorful_str(color="blue", sentence=f"{shared_key}")}')
+    print(f'OnionRouter No.{identifier} - {Colors.colorful_str(color="green", sentence="Connected!")}')
     shared_key = shared_key.encode()
     previous_node.send_cell(cell)
 
@@ -107,7 +109,7 @@ def main():
     ip = '0.0.0.0'
     # listen for every cell packet which comes through this port
     server = ORSocket(ip, PORT)
-    print(f'Listening to port {PORT}.')
+    print(f'Listening to port {Colors.colorful_str(color="cyan", sentence=f"{PORT}")}.')
     previous_node = server.accept()
     cell = previous_node.recv_cell()
     print(f'Received Create Request: {cell}')
