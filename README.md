@@ -23,12 +23,19 @@ As a final project, my partner, **Yakir Demri**, and I took the idea to implemen
 In this section, I'll explain how to operate the system on you on:
  - In order to initialize the routers on the system, the default amount (Which we illustrated in the project demonstration) is only 3 onion router. Each router is stand-alone virtual machine which runs the routers' script. of-course, It's possible to add more as much as you want but an Initialization is required.
  - In case you want to add **more routers**, follow those steps:
+ 
 1.1. Open new router machine (Using VMware\VirtualBox or different PC).
+
 1.2. Go to the 'Onion_Initialization.py' and uncomment the main section.
+
 1.3. Run this script [This part creates an SSL certificate (X.509) and generate new set of public & private keys)
+
 1.4. Close this file (It's recommended to comment this section again in order to avoid situation in which you run that script again) 
+
 1.5. On your directory you'll see a new file called 'directory_server.txt', now, copy his content and paste it in every machine in the system [This file illustrate the directory units which we could not implemented due to the lack of time].
+
 1.6. Validate that all the other machines has identical file content there.
+
 1.7. You're good to go!
 
  - In order to run the routers' script, and make them start listening, write this command:
