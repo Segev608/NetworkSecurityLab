@@ -51,3 +51,5 @@ After running the routers' script you can continue to the client part
 It's important to remember - Our system shows a capability that we have been able to fulfill, therefore there is no special interface with the user here. Despite this, we have created outputs that make it possible to follow what is happening and make it possible to illustrate a little about the interactivity that the system is able to provide in sophisticated situations such as the implementation of Tor provides us.
 
 In order to understand more about the configuration of our implementation, you can take a look at the following image that illustrates the outputs that the machine takes out and the process that goes through from the beginning of the run to the end.
+
+![Image of the procedure](https://github.com/Segev608/NetworkSecurityLab/blob/master/procedure.png)
