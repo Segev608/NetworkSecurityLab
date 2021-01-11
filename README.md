@@ -45,6 +45,8 @@ https://www.claudiobernasconi.ch/2016/04/17/creating-a-self-signed-x509-certific
  
 On Linux: `$ sudo python3 onion_router.py`
 
+![onion setup](https://github.com/Segev608/NetworkSecurityLab/blob/master/SimulationImg/router2setup.png)
+
 On Windows `C:\Users\YourPC> python onion_router.py`
 
 After running the routers' script you can continue to the client part
@@ -52,6 +54,8 @@ After running the routers' script you can continue to the client part
  - In order to run the client's script and start the simulation, write this command:
  
  On Linux: `$ sudo python3 onion_client.py`
+ 
+ ![client setup](https://github.com/Segev608/NetworkSecurityLab/blob/master/SimulationImg/ClientSetup.png)
  
  On Windows `C:\Users\YourPC> python onion_client.py`
  
@@ -62,3 +66,4 @@ It's important to remember - Our system shows a capability that we have been abl
 In order to understand more about the configuration of our implementation, you can take a look at the following image that illustrates the outputs that the machine takes out and the process that goes through from the beginning of the run to the end.
 
 ![Image of the procedure](https://github.com/Segev608/NetworkSecurityLab/blob/master/procedure.png)
+## Simulation
