@@ -28,7 +28,10 @@ In this section, I'll explain how to operate the system on you on:
 
 1.2. Go to the 'Onion_Initialization.py' and uncomment the main section.
 
-1.3. Run this script [This part creates an SSL certificate (X.509) and generate new set of public & private keys)
+1.3. Run this script on **linux** [This part creates an SSL certificate (X.509) and generate new set of public & private keys]
+
+1.3.1. On Windows, in order to generate self-signed x509 Certificate, use **openssl**. Great tutorial for download located in this website:
+https://www.claudiobernasconi.ch/2016/04/17/creating-a-self-signed-x509-certificate-using-openssl-on-windows/
 
 1.4. Close this file (It's recommended to comment this section again in order to avoid situation in which you run that script again) 
 
@@ -44,8 +47,11 @@ On Windows `C:\Users\YourPC> python onion_router.py`
 After running the routers' script you can continue to the client part
 
  - In order to run the client's script and start the simulation, write this command:
+ 
  On Linux: `$ sudo python3 onion_client.py`
+ 
  On Windows `C:\Users\YourPC> python onion_client.py`
+ 
  After completing those steps, you're ready to start!
  ## Run on your own
 It's important to remember - Our system shows a capability that we have been able to fulfill, therefore there is no special interface with the user here. Despite this, we have created outputs that make it possible to follow what is happening and make it possible to illustrate a little about the interactivity that the system is able to provide in sophisticated situations such as the implementation of Tor provides us.
