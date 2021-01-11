@@ -39,6 +39,13 @@ https://www.claudiobernasconi.ch/2016/04/17/creating-a-self-signed-x509-certific
 
 1.6. Validate that all the other machines has identical file content there.
 
+1.6.1. Whenever you inserting more routers (on every machine) go to the 'onion_router.py' and choose unique indentifier for each and every router in your Onion's network: 
+
+
+`identifier = 1` <-- Change this number!
+
+`PORT = 9000 + identifier`
+
 1.7. You're good to go!
 
  - In order to run the routers' script, and make them start listening, write this command:
