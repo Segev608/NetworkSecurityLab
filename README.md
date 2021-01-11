@@ -42,7 +42,9 @@ https://www.claudiobernasconi.ch/2016/04/17/creating-a-self-signed-x509-certific
 1.7. You're good to go!
 
  - In order to run the routers' script, and make them start listening, write this command:
+ 
 On Linux: `$ sudo python3 onion_router.py`
+
 On Windows `C:\Users\YourPC> python onion_router.py`
 After running the routers' script you can continue to the client part
 
