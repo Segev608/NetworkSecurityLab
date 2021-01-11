@@ -67,3 +67,25 @@ In order to understand more about the configuration of our implementation, you c
 
 ![Image of the procedure](https://github.com/Segev608/NetworkSecurityLab/blob/master/procedure.png)
 ## Simulation
+after starting the scripts at the client & routers let's continue to the next part.
+* Client uses the file 'directory_server.txt' to chose 3 routers in a random order (in our case 4, 2, 3):
+![Shuffle completed](https://github.com/Segev608/NetworkSecurityLab/blob/master/SimulationImg/SuffleComplete.png)
+
+* Now, the client is ready to build-up the circuit with the first router - No.4:
+![1/3 circuit completed](https://github.com/Segev608/NetworkSecurityLab/blob/master/SimulationImg/CreateCreated1.png)
+
+* Now, the client is ready to build-up the circuit with the second router - No.2:
+![2/3 circuit completed](https://github.com/Segev608/NetworkSecurityLab/blob/master/SimulationImg/CreateCreated2.png)
+
+* Now, the client is ready to build-up the circuit with the third router - No.3:
+![3/3 circuit completed](https://github.com/Segev608/NetworkSecurityLab/blob/master/SimulationImg/CreateCreated3.png)
+
+**Remember** - the client is located in the most right screen. To his left, located the 'Guard Onion Router' and after that, just standard relay and to his left we can see the 'Exit Onion Router' which passes the traffic from the source - the client, toward the destination.
+
+* Now, after we finished to build-up the circuit, we can initiate the first handshake (In real scenario, this part, as the graph above shows, really initiate a TCP handshake with the website that the client wants to talk with, but we used this part to show full connection - send traffic from client and see that it reached the Exit router) see by yourself that both the Gurad & middle realy **does not** know what is going on inside the packet because it's encrypted with 3 layers of symmetric key encryption:
+![Begin connection](https://github.com/Segev608/NetworkSecurityLab/blob/master/SimulationImg/BeginConnected.png)
+
+* So, the circuit is fully-ready to transfer some real data from the internet, let's request an image from the Tor project website and see it sends back to the client:
+![Begin connection](https://github.com/Segev608/NetworkSecurityLab/blob/master/SimulationImg/Data.png)
+
+Finally, as you can see, in the lower-right part of the client's screen, a photo suddenly appeared, this is the photo which we just requested! 
