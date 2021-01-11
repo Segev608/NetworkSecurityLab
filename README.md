@@ -7,9 +7,9 @@ Hello, my name is segev burstein and this page represents the fundamental materi
 
 **NOTE:** Not every topic mentioned here got a homework assignment due to the fact that we had to work on the project of the course at some stage.
 
- - DHCP (Starvation + Persistent) [Targil 1]
- - ARP (Spoofing & Detection) [Targil 2-3]
- - DNS (Cache Poisoning) [Targil 4]
+ - DHCP  (Starvation + Persistent)   [Targil 1]
+ - ARP   (Spoofing & Detection)      [Targil 2-3]
+ - DNS   (Cache Poisoning)           [Targil 4]
  - DNSSEC
  - SSL/TLS, HTTPS
  - IPSec (Transport & Tunneling)
