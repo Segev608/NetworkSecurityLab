@@ -30,7 +30,7 @@ In this section, I'll explain how to operate the system on you on:
 
 1.3. Run this script on **linux** [This part creates an SSL certificate (X.509) and generate new set of public & private keys]
 
-1.3.1. On Windows, in order to generate self-signed x509 Certificate, use **openssl**. Great tutorial for download located in this website:
+1.3.1. On **Windows**, in order to generate self-signed x509 Certificate, use **openssl**. Great tutorial for download located in this website:
 https://www.claudiobernasconi.ch/2016/04/17/creating-a-self-signed-x509-certificate-using-openssl-on-windows/
 
 1.4. Close this file (It's recommended to comment this section again in order to avoid situation in which you run that script again) 
