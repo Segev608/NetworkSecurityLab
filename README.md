@@ -46,6 +46,7 @@ https://www.claudiobernasconi.ch/2016/04/17/creating-a-self-signed-x509-certific
 On Linux: `$ sudo python3 onion_router.py`
 
 On Windows `C:\Users\YourPC> python onion_router.py`
+
 After running the routers' script you can continue to the client part
 
  - In order to run the client's script and start the simulation, write this command:
