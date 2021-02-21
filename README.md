@@ -13,7 +13,8 @@ Hello, my name is segev burstein and this page represents the fundamental materi
  - DNSSEC
  - SSL/TLS, HTTPS
  - IPSec (Transport & Tunneling)
- - Kerberos
+ - TTPs & Kerberos
+ - MANET (Mobile Ad-Hoc Network)
 
 # Final Project
 
