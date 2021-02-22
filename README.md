@@ -2,6 +2,7 @@
 
 Hello, my name is segev burstein and this page represents the fundamental material in which I've studied in this course. 
 
+![Contributors 2](https://img.shields.io/badge/Contributors-2-brightgreen.svg)
 
 # Course Syllabus
 
