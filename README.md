@@ -1,6 +1,6 @@
 # Network Security Course
 
-Hello, my name is segev burstein and this page represents the fundamental material in which I've studied in this course. 
+Hello, my name is Segev Burstein and this page represents the fundamental material in which I've studied in this course. 
 
 ![Contributors 2](https://img.shields.io/badge/Contributors-2-brightgreen.svg)
 
